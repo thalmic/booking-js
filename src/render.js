@@ -5,6 +5,7 @@ var $               = require('jquery');
 var moment          = window.moment = require('moment');
 var stringify       = require('json-stringify-safe');
 window.fullcalendar = require('fullcalendar');
+
 require('moment-timezone/builds/moment-timezone-with-data-2012-2022.js');
 require('fullcalendar/dist/fullcalendar.css');
 require('./styles/fullcalendar.scss');
@@ -12,7 +13,8 @@ require('./styles/utils.scss');
 require('./styles/main.scss');
 require('./styles/testmoderibbon.scss');
 
-var timezones    = require('./timezones');
+var ics       = require('./ics.js');
+var timezones = require('./timezones');
 
 function InitRender(deps) {
 
@@ -53,9 +55,9 @@ function InitRender(deps) {
       output_timezone: customerTimezone
     };
 
-    if (getConfig().project_id) args.project_id = getConfig().project_id
-    if (getConfig().resources) args.resources = getConfig().resources
-    if (getConfig().availability_constraints) args.constraints = getConfig().availability_constraints
+    if (getConfig().project_id) args.project_id = getConfig().project_id;
+    if (getConfig().resources) args.resources = getConfig().resources;
+    if (getConfig().availability_constraints) args.constraints = getConfig().availability_constraints;
 
     $.extend(args, getConfig().availability);
 
@@ -97,12 +99,12 @@ function InitRender(deps) {
       headers: {
         'Timekit-Timezone': customerTimezone
       }
-    }
+    };
 
     // scope group booking slots by widget ID if possible
     if (getConfig().project_id) requestData.params = {
       search: 'project.id:' + getConfig().project_id
-    }
+    };
 
     sdk
     .makeRequest(requestData)
@@ -115,13 +117,13 @@ function InitRender(deps) {
           end: item.attributes.event_info.end,
           booking: item
         }
-      })
+      });
 
       // Make sure to sort the slots chronologically,
       // otherwise FullCalendar might skip rendering some of them
       slots.sort(function(a, b) {
         return moment(a.start) - moment(b.start);
-      })
+      });
 
       utils.doCallback('getBookingSlotsSuccessful', response);
       hideLoadingScreen();
@@ -231,7 +233,7 @@ function InitRender(deps) {
     var showCredits = getConfig().ui.show_credits;
 
     // If neither TZ helper or credits is shown, dont render the footer
-    if (!showTimezoneHelper && !showCredits) return
+    if (!showTimezoneHelper && !showCredits) return;
 
     var campaignName = 'widget';
     var campaignSource = window.location.hostname.replace(/\./g, '-');
@@ -274,15 +276,15 @@ function InitRender(deps) {
     // Add the guessed customer timezone to list if its unknwon
     var knownTimezone = $.grep(timezones, function (tz) {
       return tz.key === customerTimezone
-    }).length > 0
+    }).length > 0;
     if (!knownTimezone) {
-      var name = '(' + moment().tz(customerTimezone).format('Z') + ') ' + customerTimezone
+      var name = '(' + moment().tz(customerTimezone).format('Z') + ') ' + customerTimezone;
       timezones.unshift({
         key: customerTimezone,
         name: name
       });
     }
-  }
+  };
 
   // Set timezone
   var setCustomerTimezone = function (newTz) {
@@ -290,7 +292,7 @@ function InitRender(deps) {
       throw triggerError(['Trying to set invalid or unknown timezone', newTz]);
     }
     customerTimezone = newTz;
-  }
+  };
 
   // Setup and render FullCalendar
   var initializeCalendar = function() {
@@ -316,10 +318,10 @@ function InitRender(deps) {
     calendarTarget.fullCalendar(args);
 
     $(rootTarget).on('customer-timezone-changed', function () {
-      if (!calendarTarget) return
+      if (!calendarTarget) return;
       getAvailability();
       calendarTarget.fullCalendar('option', 'now', moment().tz(customerTimezone).format());
-    })
+    });
 
     utils.doCallback('fullCalendarInitialized');
 
@@ -341,9 +343,9 @@ function InitRender(deps) {
   // Fires when window is resized and calendar must adhere
   var decideCalendarSize = function(currentView) {
 
-    currentView = currentView || calendarTarget.fullCalendar('getView').name
+    currentView = currentView || calendarTarget.fullCalendar('getView').name;
 
-    var view = getConfig().fullcalendar.defaultView
+    var view = getConfig().fullcalendar.defaultView;
     var height = 385;
 
     if (rootTarget.width() < 480) {
@@ -360,7 +362,7 @@ function InitRender(deps) {
       if (field.format === 'textarea') height += 98;
       else if (field.format === 'checkbox') height += 51;
       else height += 66;
-    })
+    });
 
     return {
       height: height,
@@ -372,9 +374,9 @@ function InitRender(deps) {
   // Render the supplied calendar events in FullCalendar
   var renderCalendarEvents = function(eventData) {
 
-    var firstEventStart = moment(eventData[0].start)
-    var firstEventEnd = moment(eventData[0].end)
-    var firstEventDuration = firstEventEnd.diff(firstEventStart, 'minutes')
+    var firstEventStart = moment(eventData[0].start);
+    var firstEventEnd = moment(eventData[0].end);
+    var firstEventDuration = firstEventEnd.diff(firstEventStart, 'minutes');
 
     if (firstEventDuration <= 90) {
       calendarTarget.fullCalendar('option', 'slotDuration', '00:15:00')
@@ -447,19 +449,19 @@ function InitRender(deps) {
   var triggerError = function(message) {
 
     // If an error already has been thrown, exit
-    if (errorTarget) return message
+    if (errorTarget) return message;
 
     utils.doCallback('errorTriggered', message);
-    utils.logError(message)
+    utils.logError(message);
 
     // If no target DOM element exists, only do the logging
-    if (!rootTarget) return message
+    if (!rootTarget) return message;
 
-    var messageProcessed = message
-    var contextProcessed = null
+    var messageProcessed = message;
+    var contextProcessed = null;
 
     if (utils.isArray(message)) {
-      messageProcessed = message[0]
+      messageProcessed = message[0];
       if (message[1].data) {
         contextProcessed = stringify(message[1].data.errors || message[1].data.error || message[1].data)
       } else {
@@ -488,24 +490,24 @@ function InitRender(deps) {
     var selectTemplate = require('./templates/fields/select.html');
     var checkboxTemplate = require('./templates/fields/checkbox.html');
 
-    var fieldsTarget = []
+    var fieldsTarget = [];
     $.each(getConfig().customer_fields, function(key, field) {
-      var tmpl = textTemplate
-      if (field.format === 'textarea') tmpl = textareaTemplate
-      if (field.format === 'select') tmpl = selectTemplate
-      if (field.format === 'checkbox') tmpl = checkboxTemplate
-      if (!field.format) field.format = 'text'
-      if (key === 'email') field.format = 'email'
+      var tmpl = textTemplate;
+      if (field.format === 'textarea') tmpl = textareaTemplate;
+      if (field.format === 'select') tmpl = selectTemplate;
+      if (field.format === 'checkbox') tmpl = checkboxTemplate;
+      if (!field.format) field.format = 'text';
+      if (key === 'email') field.format = 'email';
       var data = $.extend({
         key: key,
         arrowDownIcon: require('!svg-inline!./assets/arrow-down-icon.svg')
-      }, field)
-      var fieldTarget = $(tmpl.render(data))
+      }, field);
+      var fieldTarget = $(tmpl.render(data));
       fieldsTarget.push(fieldTarget)
-    })
+    });
 
     return fieldsTarget
-  }
+  };
 
   // Event handler when a timeslot is clicked in FullCalendar
   var showBookingPage = function(eventData) {
@@ -528,7 +530,11 @@ function InitRender(deps) {
       loadingIcon:              require('!svg-inline!./assets/loading-spinner.svg'),
       errorIcon:                require('!svg-inline!./assets/error-icon.svg'),
       submitText:               getConfig().ui.localization.submit_button,
-      successMessage:           interpolate.sprintf(getConfig().ui.localization.success_message, '<span class="booked-email"></span>')
+      successMessage:           interpolate.sprintf(getConfig().ui.localization.success_message, '<span class="booked-email"></span>'),
+      appleIcon:                require('!svg-inline!./assets/apple.svg'),
+      googleIcon:               require('!svg-inline!./assets/google.svg'),
+      outlookIcon:              require('!svg-inline!./assets/outlook.svg'),
+      yahooIcon:                require('!svg-inline!./assets/yahoo.svg')
     }));
 
     var formFields = bookingPageTarget.find('.bookingjs-form-fields');
@@ -558,7 +564,7 @@ function InitRender(deps) {
     });
 
     $(rootTarget).on('customer-timezone-changed', function () {
-      if (!bookingPageTarget) return
+      if (!bookingPageTarget) return;
       $('.bookingjs-bookpage-date').text(formatTimestamp(eventData.start, dateFormat));
       $('.bookingjs-bookpage-time').text(formatTimestamp(eventData.start, timeFormat) + ' - ' + formatTimestamp(eventData.end, timeFormat));
     });
@@ -579,7 +585,7 @@ function InitRender(deps) {
   // Output timestamp into given format in customers timezone
   var formatTimestamp = function (start, format) {
     return moment(start).tz(customerTimezone).format(format);
-  }
+  };
 
   // Remove the booking page DOM node
   var hideBookingPage = function() {
@@ -606,6 +612,8 @@ function InitRender(deps) {
     if(formElement.hasClass('success')) {
       getAvailability();
       hideBookingPage();
+      hideIcsButtons();
+
       return;
     }
 
@@ -629,12 +637,16 @@ function InitRender(deps) {
     utils.doCallback('submitBookingForm', formData);
 
     // Call create event endpoint
-    timekitCreateBooking(formData, eventData).then(function(response){
+    timekitCreateBooking(formData, eventData).then(function(){
+
+      window.formElement = formElement;
 
       formElement.find('.booked-email').html(formData.email);
       formElement.removeClass('loading').addClass('success');
 
-    }).catch(function(response){
+      showIcsButtons(formElement, eventData);
+
+    }).catch(function(){
 
       showBookingFailed(formElement)
 
@@ -655,12 +667,67 @@ function InitRender(deps) {
       formElement.removeClass('error');
     }, 2000);
 
-  }
+  };
+
+  var hideIcsButtons = function (formElement) {
+    formElement.find('.bookingjs-form-add-to-calendar-div').hide();
+  };
+
+  var showIcsButtons = function (formElement, event) {
+
+    // Grab the ICS config
+    var config = getConfig().ics;
+    if (!config) {
+      return;
+    }
+
+    // Show the add to calendar div
+    formElement.find('.bookingjs-form-add-to-calendar-div').show();
+
+    // Enable the provider options when add to calendar is pressed
+    var showButton = formElement.find('.bookingjs-form-add-to-calendar-show-button');
+    var addToCalendarButtons = formElement.find('.bookingjs-form-add-to-calendar-calendars');
+    showButton.click(function() {
+      showButton.hide();
+      addToCalendarButtons.show();
+    });
+
+    // Create the ICS event
+    var icsEvent = {
+      title: config.title,
+      start: event.start.toDate(),
+      end: event.end.toDate(),
+      address: config.address,
+      description: config.description
+    };
+
+    formElement.find('#add-to-google').unbind('click').click(function() {
+      window.open(ics.google(icsEvent), '_blank');
+    });
+
+    formElement.find('#add-to-apple').unbind('click').click(function() {
+      var link = document.createElement('a');
+      link.href = ics.apple(icsEvent);
+      link.download = config.file + '.ics';
+      link.click();
+    });
+
+    formElement.find('#add-to-yahoo').unbind('click').click(function() {
+      window.open(ics.yahoo(icsEvent), '_blank');
+    });
+
+    formElement.find('#add-to-outlook').unbind('click').click(function() {
+      var link = document.createElement('a');
+      link.href = ics.outlook(icsEvent);
+      link.download = config.file + '.ics';
+      link.click();
+    });
+  };
 
   // Create new booking
   var timekitCreateBooking = function(formData, eventData) {
 
-    var nativeFields = ['name', 'email', 'location', 'comment', 'phone', 'voip']
+    var nativeFields = ['name', 'email', 'location', 'comment', 'phone', 'voip'];
 
     var args = {
       start: eventData.start.format(),
@@ -704,14 +771,14 @@ function InitRender(deps) {
 
     // Save custom fields in meta object
     $.each(getConfig().customer_fields, function(key, field) {
-      if ($.inArray(key, nativeFields) >= 0) return
-      if (field.format === 'checkbox') formData[key] = !!formData[key]
-      args.customer[key] = formData[key]
+      if ($.inArray(key, nativeFields) >= 0) return;
+      if (field.format === 'checkbox') formData[key] = !!formData[key];
+      args.customer[key] = formData[key];
       args.description += (getConfig().customer_fields[key].title || key) + ': ' + formData[key] + '\n';
-    })
+    });
 
     if (getConfig().booking.graph === 'group_customer' || getConfig().booking.graph === 'group_customer_payment') {
-      args.related = { owner_booking_id: eventData.booking.id }
+      args.related = { owner_booking_id: eventData.booking.id };
       args.resource_id = eventData.booking.resource.id
     } else if (typeof eventData.resources === 'undefined' || eventData.resources.length === 0) {
       throw triggerError(['No resources to pick from when creating booking']);
@@ -741,9 +808,9 @@ function InitRender(deps) {
 
   // Destory fullcalendar and cleanup event listeners etc.
   var destroyFullCalendar = function() {
-    if (!calendarTarget || calendarTarget.fullCalendar === undefined) return
+    if (!calendarTarget || calendarTarget.fullCalendar === undefined) return;
     calendarTarget.fullCalendar('destroy')
-  }
+  };
 
   // The fullCalendar object for advanced puppeting
   var fullCalendar = function() {
@@ -769,4 +836,4 @@ function InitRender(deps) {
   }
 }
 
-module.exports = InitRender
+module.exports = InitRender;

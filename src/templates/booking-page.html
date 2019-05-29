@@ -16,11 +16,30 @@
       <div class="bookingjs-form-fields">
       </div>
     </div>
-    <button class="bookingjs-form-button" type="submit">
-      <span class="inactive-text">{{ submitText }}</span>
-      <span class="loading-text">{{& loadingIcon }}</span>
-      <span class="error-text">{{& errorIcon }}</span>
-      <span class="success-text">{{& checkmarkIcon }}</span>
-    </button>
+    <div class="bookingjs-form-buttons">
+      <button class="bookingjs-form-button" type="submit">
+        <span class="inactive-text">{{ submitText }}</span>
+        <span class="loading-text">{{& loadingIcon }}</span>
+        <span class="error-text">{{& errorIcon }}</span>
+        <span class="success-text">{{& checkmarkIcon }}</span>
+      </button>
+      <div class="bookingjs-form-add-to-calendar-div" style="display: none">
+        <button class="bookingjs-form-add-to-calendar-show-button" type="button">Add to Calendar</button>
+        <div class="bookingjs-form-add-to-calendar-calendars" style="display: none">
+          <button class="bookingjs-form-add-to-calendar-button" id="add-to-google" type="button">
+            <span class="add-to-calendar-icon">{{& googleIcon }}</span>
+          </button>
+          <button class="bookingjs-form-add-to-calendar-button" id="add-to-apple" type="button">
+            <span class="add-to-calendar-icon">{{& appleIcon }}</span>
+          </button>
+          <button class="bookingjs-form-add-to-calendar-button" id="add-to-yahoo" type="button">
+            <span class="add-to-calendar-icon">{{& yahooIcon }}</span>
+          </button>
+          <button class="bookingjs-form-add-to-calendar-button" id="add-to-outlook" type="button">
+            <span class="add-to-calendar-icon">{{& outlookIcon }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </form>
 </div>
