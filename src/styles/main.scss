@@ -504,7 +504,49 @@
       opacity: 0.5;
     }
 
+    &-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+      align-items: center;
+    }
+
+    // Set up a right aligned flex on the whole add-to-calendar functionality
+    &-add-to-calendar-div {
+      display: flex;
+      flex-grow: 1;
+      margin-right: 10px;
+      justify-content: flex-end;
+    }
+
+    // Center the calender buttons and force a scale and opacity
+    &-add-to-calendar-calendars {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .add-to-calendar-icon {
+        opacity: 1 !important;
+        top: 11px !important;
+
+        svg {
+          transform: scale(1) !important;
+          height: 20px !important;
+        }
+      }
+    }
+
+    // Space the timekit button a little bit from the left
     &-button {
+      margin-left: 10px;
+    }
+
+    // Put 10px between the calendar icon buttons
+    &-add-to-calendar-button {
+      margin-left: 10px;
+    }
+
+    &-button, &-add-to-calendar-show-button, &-add-to-calendar-button {
       position: relative;
       transition: background-color 0.2s, max-width 0.3s;
       display: inline-block;
@@ -517,13 +559,13 @@
       border-radius: 3px;
       font-size: 1.1em;
       font-weight: 600;
-      margin-top: 30px;
       cursor: pointer;
       height: 44px;
       outline: 0;
       text-align: center;
       max-width: 200px;
 
+      .add-to-calendar-icon,
       .success-text,
       .error-text,
       .loading-text {
@@ -552,6 +594,7 @@
         margin-top: 2px;
       }
 
+      .add-to-calendar-icon svg,
       .success-text svg {
         height: 15px;
         margin-top: 2px;
