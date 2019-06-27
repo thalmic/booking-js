@@ -272,7 +272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  // Get library version
 	  var getVersion = function() {
-	    return ("2.6.1");
+	    return ("2.6.2");
 	  };
 	
 	  var destroy = function() {
@@ -5854,7 +5854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      formElement.find('.booked-email').html(formData.email);
 	      formElement.removeClass('loading').addClass('success');
 	
-	      showIcsButtons(formElement, eventData);
+	      showIcsButtons(formElement, formData.email, eventData);
 	
 	    }).catch(function(){
 	
@@ -5883,7 +5883,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    formElement.find('.bookingjs-form-add-to-calendar-div').hide();
 	  };
 	
-	  var showIcsButtons = function (formElement, event) {
+	  var showIcsButtons = function (formElement, email, event) {
 	
 	    // Grab the ICS config
 	    var config = getConfig().ics;
@@ -5904,6 +5904,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    // Create the ICS event
 	    var icsEvent = {
+	      email: email,
+	      productId: config.productId,
 	      title: config.title,
 	      start: event.start.toDate(),
 	      end: event.end.toDate(),
@@ -27729,12 +27731,15 @@ return /******/ (function(modules) { // webpackBootstrap
 			'data:text/calendar;charset=utf8,' + [
 				'BEGIN:VCALENDAR',
 				'VERSION:2.0',
+				'PRODID:' + (event.productId || ''),
 				'BEGIN:VEVENT',
+				'UID:' + event.email,
 				'URL:' + document.URL,
+				'DTSTAMP:' + formatTime(new Date()),
 				'DTSTART:' + (startTime || ''),
 				'DTEND:' + (endTime || ''),
 				'SUMMARY:' + (event.title || ''),
-				'DESCRIPTION:' + (event.description || ''),
+				'DESCRIPTION:' + (event.description || '').replace(/(\r\n|\n|\r)/gm, '\\n'),
 				'LOCATION:' + (event.address || ''),
 				'END:VEVENT',
 				'END:VCALENDAR'].join('\n'));
