@@ -63,12 +63,15 @@ var icsLink = function(event) {
 		'data:text/calendar;charset=utf8,' + [
 			'BEGIN:VCALENDAR',
 			'VERSION:2.0',
+			'PRODID:' + (event.productId || ''),
 			'BEGIN:VEVENT',
+			'UID:' + event.email,
 			'URL:' + document.URL,
+			'DTSTAMP:' + formatTime(new Date()),
 			'DTSTART:' + (startTime || ''),
 			'DTEND:' + (endTime || ''),
 			'SUMMARY:' + (event.title || ''),
-			'DESCRIPTION:' + (event.description || ''),
+			'DESCRIPTION:' + (event.description || '').replace(/(\r\n|\n|\r)/gm, '\\n'),
 			'LOCATION:' + (event.address || ''),
 			'END:VEVENT',
 			'END:VCALENDAR'].join('\n'));

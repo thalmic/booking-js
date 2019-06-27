@@ -644,7 +644,7 @@ function InitRender(deps) {
       formElement.find('.booked-email').html(formData.email);
       formElement.removeClass('loading').addClass('success');
 
-      showIcsButtons(formElement, eventData);
+      showIcsButtons(formElement, formData.email, eventData);
 
     }).catch(function(){
 
@@ -673,7 +673,7 @@ function InitRender(deps) {
     formElement.find('.bookingjs-form-add-to-calendar-div').hide();
   };
 
-  var showIcsButtons = function (formElement, event) {
+  var showIcsButtons = function (formElement, email, event) {
 
     // Grab the ICS config
     var config = getConfig().ics;
@@ -694,6 +694,8 @@ function InitRender(deps) {
 
     // Create the ICS event
     var icsEvent = {
+      email: email,
+      productId: config.productId,
       title: config.title,
       start: event.start.toDate(),
       end: event.end.toDate(),
