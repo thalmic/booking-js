@@ -66,7 +66,7 @@ var icsLink = function(event) {
 			'PRODID:' + (event.productId || ''),
 			'BEGIN:VEVENT',
 			'UID:' + event.email,
-			'URL:' + document.URL,
+			'URL:' + event.sourceUrl,
 			'DTSTAMP:' + formatTime(new Date()),
 			'DTSTART:' + (startTime || ''),
 			'DTEND:' + (endTime || ''),

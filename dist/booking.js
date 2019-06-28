@@ -5910,7 +5910,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      start: event.start.toDate(),
 	      end: event.end.toDate(),
 	      address: config.address,
-	      description: config.description
+	      description: config.description,
+	      sourceUrl: config.sourceUrl
 	    };
 	
 	    formElement.find('#add-to-google').unbind('click').click(function() {
@@ -27734,7 +27735,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				'PRODID:' + (event.productId || ''),
 				'BEGIN:VEVENT',
 				'UID:' + event.email,
-				'URL:' + document.URL,
+				'URL:' + event.sourceUrl,
 				'DTSTAMP:' + formatTime(new Date()),
 				'DTSTART:' + (startTime || ''),
 				'DTEND:' + (endTime || ''),

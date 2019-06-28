@@ -700,7 +700,8 @@ function InitRender(deps) {
       start: event.start.toDate(),
       end: event.end.toDate(),
       address: config.address,
-      description: config.description
+      description: config.description,
+      sourceUrl: config.sourceUrl
     };
 
     formElement.find('#add-to-google').unbind('click').click(function() {
