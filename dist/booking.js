@@ -272,7 +272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  // Get library version
 	  var getVersion = function() {
-	    return ("2.6.3");
+	    return ("2.6.4");
 	  };
 	
 	  var destroy = function() {
