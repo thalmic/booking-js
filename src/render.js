@@ -540,8 +540,11 @@ function InitRender(deps) {
     var formFields = bookingPageTarget.find('.bookingjs-form-fields');
     $(formFields).append(renderCustomerFields());
     
-    var form = bookingPageTarget.children('.bookingjs-form');
+    // E-mail opt in
+    $(formFields).find('.input-email').after('<div class="email-optin"> By submitting your email you agree \
+    to receive updates from North Inc. You can unsubscribe at any time. </div>');
 
+    var form = bookingPageTarget.children('.bookingjs-form');
     bookingPageTarget.children('.bookingjs-bookpage-close').click(function(e) {
       e.preventDefault();
       var bookingHasBeenCreated = $(form).hasClass('success');
