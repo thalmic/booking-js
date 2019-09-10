@@ -58,6 +58,7 @@
     border-radius: 0 0 4px 4px;
     font-size: 12px;
     overflow: hidden;
+    margin-top: 20px;
 
     .is-small & {
       padding: 3px 15px;
@@ -331,6 +332,12 @@
 
     .is-small & {
       width: 90%;
+    }
+
+    .email-optin {
+      padding-bottom: 1rem;
+      text-align: center;
+      line-height: normal;
     }
 
     &-box {
