@@ -648,16 +648,20 @@ function InitRender(deps) {
       formElement.removeClass('loading').addClass('success');
 
       showIcsButtons(formElement, formData.email, eventData);
-
-    }).catch(function(){
-
-      showBookingFailed(formElement)
-
+    }).catch(function(err){
+      showBookingFailed(formElement, err)
     });
-
   };
 
-  var showBookingFailed = function (formElement) {
+  var showBookingFailed = function (formElement, err) {
+    if (err) {
+      if(err.status === 422 && err.data && err.data.errors['customer.email']) {
+        if ($('.email-error').length === 0) {
+          formElement.find('.input-email').after('<div class="email-error">Please enter a valid email.</div>');
+          formElement.find('.input-email').addClass('error');
+        }
+      }
+    }
 
     var submitButton = formElement.find('.bookingjs-form-button');
     submitButton.addClass('button-shake');
@@ -805,7 +809,7 @@ function InitRender(deps) {
       utils.doCallback('createBookingSuccessful', response);
     }).catch(function(response){
       utils.doCallback('createBookingFailed', response);
-      triggerError(['An error with Timekit Create Booking occured', response]);
+      throw triggerError(['An error with Timekit Create Booking occured', response]);
     });
 
     return request;
