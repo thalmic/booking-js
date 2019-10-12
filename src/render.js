@@ -260,7 +260,7 @@ function InitRender(deps) {
     // Set initial customer timezone
     var pickerSelect = $('.bookingjs-footer-tz-picker-select');
     pickerSelect.val(customerTimezone);
-    
+
     // Listen to changes by the user
     pickerSelect.change(function() {
       setCustomerTimezone(pickerSelect.val());
@@ -484,7 +484,7 @@ function InitRender(deps) {
 
   // Render customer fields
   var renderCustomerFields = function () {
-    
+
     var textTemplate = require('./templates/fields/text.html');
     var textareaTemplate = require('./templates/fields/textarea.html');
     var selectTemplate = require('./templates/fields/select.html');
@@ -539,7 +539,7 @@ function InitRender(deps) {
 
     var formFields = bookingPageTarget.find('.bookingjs-form-fields');
     $(formFields).append(renderCustomerFields());
-    
+
     // E-mail opt in
     $(formFields).find('.input-email').after('<div class="email-optin"> By submitting your email you agree \
     to receive updates from North Inc. You can unsubscribe at any time. </div>');
@@ -648,16 +648,21 @@ function InitRender(deps) {
       formElement.removeClass('loading').addClass('success');
 
       showIcsButtons(formElement, formData.email, eventData);
-
-    }).catch(function(){
-
-      showBookingFailed(formElement)
-
+    }).catch(function(err){
+      showBookingFailed(formElement, err)
     });
-
   };
 
-  var showBookingFailed = function (formElement) {
+  var showBookingFailed = function (formElement, err) {
+    if (err) {
+      if(err.status === 422 && err.data && err.data.errors['customer.email']) {
+        if ($('.email-error').length === 0) {
+          formElement.find('.input-email')
+            .addClass('error')
+            .after('<div class="email-error">Please enter a valid email.</div>');
+        }
+      }
+    }
 
     var submitButton = formElement.find('.bookingjs-form-button');
     submitButton.addClass('button-shake');
@@ -743,7 +748,7 @@ function InitRender(deps) {
         name: formData.name,
         email: formData.email,
         timezone: customerTimezone
-      } 
+      }
     };
 
     if (getConfig().project_id) {
@@ -805,7 +810,7 @@ function InitRender(deps) {
       utils.doCallback('createBookingSuccessful', response);
     }).catch(function(response){
       utils.doCallback('createBookingFailed', response);
-      triggerError(['An error with Timekit Create Booking occured', response]);
+      throw triggerError(['An error with Timekit Create Booking occured', response]);
     });
 
     return request;

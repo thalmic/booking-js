@@ -340,6 +340,14 @@
       line-height: normal;
     }
 
+    .email-error {
+      text-align: left;
+      line-height: normal;
+      padding-bottom: 1rem;
+      transform: translateY(-10px);
+      color: $errorColor;
+    }
+
     &-box {
       position: relative;
       box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
